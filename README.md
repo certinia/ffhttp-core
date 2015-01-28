@@ -21,7 +21,7 @@ The **Google Sheets** library extends the **Core** library to provide access to 
 
 The **Dropbox** library extends the **Core** library to provide access to Dropbox API calls found at https://www.dropbox.com/developers/core/docs.
 
-Sample applications have been created for the [Core](https://github.com/financialforcedev/ffhttp-core-samples), Google Drive, Google Mirror, Google Sheets and [Dropbox]((https://github.com/financialforcedev/ffhttp-dropbox-samples) libraries to demonstrate the use of this library within Salesforce.
+Sample applications have been created for the [Core](https://github.com/financialforcedev/ffhttp-core-samples), [Google Drive](https://github.com/financialforcedev/ffhttp-googledrive-samples), Google Mirror, Google Sheets and [Dropbox]((https://github.com/financialforcedev/ffhttp-dropbox-samples) libraries to demonstrate the use of this library within Salesforce.
 
 Key Features
 ------------
