@@ -9,7 +9,7 @@ Apex HTTP Callout Framework
 Introduction
 ------------
 
-An Apex framework has been created to provide functionality for HTTP callouts. This **Core** library has been extended by five libraries [Google Cloud Print](https://github.com/financialforcedev/ffhttp-googlecloudprint), [Google Drive](https://github.com/financialforcedev/ffhttp-googledrive), [Google Mirror](https://github.com/financialforcedev/ffhttp-googlemirror), **Google Sheets** and [Dropbox](https://github.com/financialforcedev/ffhttp-dropbox).
+An Apex framework has been created to provide functionality for HTTP callouts. This **Core** library has been extended by five libraries [Google Cloud Print](https://github.com/financialforcedev/ffhttp-googlecloudprint), [Google Drive](https://github.com/financialforcedev/ffhttp-googledrive), [Google Mirror](https://github.com/financialforcedev/ffhttp-googlemirror), [Google Sheets](https://github.com/financialforcedev/ffhttp-googlesheets) and [Dropbox](https://github.com/financialforcedev/ffhttp-dropbox).
 
 The **Google Cloud Print** library extends the **Core** library to provide access to Google Cloud Print API calls found at https://developers.google.com/cloud-print/.
 
