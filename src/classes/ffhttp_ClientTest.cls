@@ -176,7 +176,7 @@ private class ffhttp_ClientTest
 	/**
 	 * Test each of the addParam/getParam methods 
 	 */
-	static testmethod void testRequestStringParameters()
+	static testMethod void testRequestStringParameters()
 	{
 		HttpClientRequest clientRequest = getDefaultClientRequest();
 		HttpRequest request = clientRequest.buildHttpRequest();
@@ -235,7 +235,7 @@ private class ffhttp_ClientTest
 		System.assertEquals(integerNullTest, 40);
 		
 		HttpRequest request = clientRequest.buildHttpRequest();
-		System.assertEquals(request.getEndpoint(), 'TestEndpoint?IntegerNegativeTest=-10&IntegerPositiveTest=10');
+		System.assertEquals(request.getEndpoint(), 'TestEndpoint?IntegerPositiveTest=10&IntegerNegativeTest=-10');
 	}
 	
 	static testMethod void testRequestLongParameters()
