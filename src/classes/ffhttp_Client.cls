@@ -100,7 +100,7 @@ public with sharing class ffhttp_Client
 	 * All requests made to a particular service have a reference to this so that the required 
 	 * credentials are set in any callout.
 	 */
-	public abstract class AbstractClient 
+	public abstract class AbstractClient implements IAbstractClient 
 	{
 		private Boolean m_credentialsRequired = true;	//Make the default for credentialsRequired true.
 		private Credentials m_credentials;
@@ -125,6 +125,14 @@ public with sharing class ffhttp_Client
 		}
 	}
 
+    public interface IAbstractClient
+    {
+        Boolean getCredentialsRequired();
+        AbstractClient setCredentialsRequired(Boolean credentialsRequired);
+        Credentials getCredentials();
+        AbstractClient setCredentials(Credentials credentials);
+    }
+    
 	/**
 	 * AbstractClientRequest
 	 *
@@ -133,7 +141,7 @@ public with sharing class ffhttp_Client
 	 */
 	public abstract class AbstractClientRequest 
 	{
-		protected AbstractClient abstractClient {get;set;}
+		protected IAbstractClient abstractClient {get;set;}
 		protected String requestMethod {get;set;}
 		protected String endpoint {get;set;}
 		protected ffhttp_IHttpContent httpContent {get;set;}
@@ -145,7 +153,7 @@ public with sharing class ffhttp_Client
 		{
 		}
 
-		protected AbstractClientRequest(AbstractClient abstractClient, String endpoint, 
+		protected AbstractClientRequest(IAbstractClient abstractClient, String endpoint, 
 										String requestMethod, ffhttp_IHttpContent httpContent, 
 										ffhttp_IDeserialize responseDeserializer) 
 		{ 
