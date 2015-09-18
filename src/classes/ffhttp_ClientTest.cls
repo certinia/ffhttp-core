@@ -107,6 +107,26 @@ private class ffhttp_ClientTest
 	 	System.assertEquals(test2.getTest(), 'Test');
 	 }
 
+	 /**
+	 * Check ffhttp_JsonDeserializer 
+	 */
+	 static testMethod void testJsonDeserializerWithNonsense()
+	 {
+	 	JsonTest test = new JsonTest();
+	 	
+	 	ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
+	 	System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
+	 	
+	 	try 
+	 	{
+	 		JsonTest test2 = (JsonTest)jds.deserialize('{"Brads garbled thing');
+	 	}
+	 	catch (Exception e)
+	 	{
+	 		System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
+	 	}
+	 }
+
 	/**
 	 * Check that to send a ffhttp_Client request the AbstractClient must be set.
 	 */
