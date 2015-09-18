@@ -31,6 +31,8 @@
  */
 public with sharing class ffhttp_JsonDeserializer implements ffhttp_IDeserialize 
 {
+	private static final String JSON_DESERIALIZATION_ERROR = "Could not deserialize JSON";
+
 	private System.Type m_apexType;
 
 	public ffhttp_JsonDeserializer(System.Type apexType) 
@@ -40,6 +42,13 @@ public with sharing class ffhttp_JsonDeserializer implements ffhttp_IDeserialize
 
 	public Object deserialize(String jsonString) 
 	{
-		return m_apexType == null ? JSON.deserializeUntyped(jsonString) : JSON.deserialize(jsonString, m_apexType);
+		try 
+		{
+			return m_apexType == null ? JSON.deserializeUntyped(jsonString) : JSON.deserialize(jsonString, m_apexType);
+		}
+		catch (Exception e)
+		{
+			throw new ffhttp_SystemException(JSON_DESERIALIZATION_ERROR, e);
+		}
 	}
 }

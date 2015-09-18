@@ -51,11 +51,20 @@ public with sharing class ffhttp_Client
 	public static final String CHARSET_UTF8 = 'UTF-8';
 	
 	/**
+	 * Credentials Interface
+	 */
+	public interface ICredentials
+	{	
+		String getTokenType();
+		String getAccessToken();
+	}
+
+	/**
 	 * Credentials
 	 * 
 	 * Wraps up the accessToken and the token type that is required to communicate with the API.
 	 */
-	public class Credentials 
+	public class Credentials implements ICredentials
 	{
 		private String m_tokenType;
 		private String m_accessToken;
@@ -69,9 +78,6 @@ public with sharing class ffhttp_Client
 			m_accessToken = accessToken;
 		}
 		
-		/**
-		 * Gets/Sets
-		 */
 		public String getTokenType()
 		{
 			return m_tokenType;
@@ -91,6 +97,17 @@ public with sharing class ffhttp_Client
 		 	return this;
 		}
 	}
+
+	/*
+	 * AbstractClient Interface
+	 */
+	public interface IAbstractClient
+    {
+        Boolean getCredentialsRequired();
+        AbstractClient setCredentialsRequired(Boolean credentialsRequired);
+        Credentials getCredentials();
+        AbstractClient setCredentials(ICredentials credentials);
+    }
 
 	/**
 	 * AbstractClient
@@ -118,20 +135,20 @@ public with sharing class ffhttp_Client
 		{
 			return m_credentials;
 		}
-		public AbstractClient setCredentials(Credentials credentials)
+		public AbstractClient setCredentials(ICredentials credentials)
 		{
 			m_credentials = credentials;
 			return this;
 		}
 	}
 
-    public interface IAbstractClient
-    {
-        Boolean getCredentialsRequired();
-        AbstractClient setCredentialsRequired(Boolean credentialsRequired);
-        Credentials getCredentials();
-        AbstractClient setCredentials(Credentials credentials);
-    }
+	public interface IAbstractClientRequest
+	{
+		HttpRequest buildHttpRequest();
+		Object execute();
+		HttpResponse executeUnparsed();
+		Object parse(HttpResponse response);
+	}
     
 	/**
 	 * AbstractClientRequest
@@ -139,7 +156,7 @@ public with sharing class ffhttp_Client
 	 * Abstract class that all API requests extend. 
 	 * This class deals with building the URL sent via HTTP to the particular service.
 	 */
-	public abstract class AbstractClientRequest 
+	public abstract class AbstractClientRequest implements IAbstractClientRequest
 	{
 		protected IAbstractClient abstractClient {get;set;}
 		protected String requestMethod {get;set;}
