@@ -104,9 +104,9 @@ public with sharing class ffhttp_Client
 	public interface IAbstractClient
     {
         Boolean getCredentialsRequired();
-        AbstractClient setCredentialsRequired(Boolean credentialsRequired);
-        Credentials getCredentials();
-        AbstractClient setCredentials(ICredentials credentials);
+        IAbstractClient setCredentialsRequired(Boolean credentialsRequired);
+        ICredentials getCredentials();
+        IAbstractClient setCredentials(ICredentials credentials);
     }
 
 	/**
@@ -120,22 +120,22 @@ public with sharing class ffhttp_Client
 	public abstract class AbstractClient implements IAbstractClient 
 	{
 		private Boolean m_credentialsRequired = true;	//Make the default for credentialsRequired true.
-		private Credentials m_credentials;
+		private ICredentials m_credentials;
 		
 		public Boolean getCredentialsRequired()
 		{
 			return m_credentialsRequired;
 		}
-		public AbstractClient setCredentialsRequired(Boolean credentialsRequired)
+		public IAbstractClient setCredentialsRequired(Boolean credentialsRequired)
 		{
 			m_credentialsRequired = credentialsRequired;
 			return this;
 		}
-		public Credentials getCredentials()
+		public ICredentials getCredentials()
 		{
 			return m_credentials;
 		}
-		public AbstractClient setCredentials(ICredentials credentials)
+		public IAbstractClient setCredentials(ICredentials credentials)
 		{
 			m_credentials = credentials;
 			return this;
@@ -202,7 +202,7 @@ public with sharing class ffhttp_Client
 	        req.setEndpoint(createEndpoint());
 	        req.setMethod(this.requestMethod);
 	        
-	        Credentials clientCredentials = abstractClient.getCredentials();
+	        ICredentials clientCredentials = abstractClient.getCredentials();
 	        if (clientCredentials != null) 
 	        {
 	        	String tokenType = clientCredentials.getTokenType();
