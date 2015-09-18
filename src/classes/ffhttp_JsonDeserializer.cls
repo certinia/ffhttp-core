@@ -31,7 +31,7 @@
  */
 public with sharing class ffhttp_JsonDeserializer implements ffhttp_IDeserialize 
 {
-	private static final String JSON_DESERIALIZATION_ERROR = "Could not deserialize JSON";
+	private static final String JSON_DESERIALIZATION_ERROR = 'Could not deserialize JSON';
 
 	private System.Type m_apexType;
 
