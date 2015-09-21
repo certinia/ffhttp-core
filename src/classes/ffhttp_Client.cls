@@ -142,6 +142,9 @@ public with sharing class ffhttp_Client
 		}
 	}
 
+	/**
+	 * AbstractClientRequest Interface
+	 */
 	public interface IAbstractClientRequest
 	{
 		HttpRequest buildHttpRequest();

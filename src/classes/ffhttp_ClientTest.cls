@@ -110,7 +110,7 @@ private class ffhttp_ClientTest
 	 /**
 	 * Check ffhttp_JsonDeserializer 
 	 */
-	 static testMethod void testJsonDeserializerWithNonsense()
+	 static testMethod void testJsonDeserializerWithInvalidJson()
 	 {
 	 	JsonTest test = new JsonTest();
 	 	
@@ -119,12 +119,15 @@ private class ffhttp_ClientTest
 	 	
 	 	try 
 	 	{
-	 		JsonTest test2 = (JsonTest)jds.deserialize('{"Brads garbled thing');
+	 		JsonTest test2 = (JsonTest)jds.deserialize('{"invalid json test}');
 	 	}
 	 	catch (Exception e)
 	 	{
 	 		System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
+	 		return;
 	 	}
+	 	
+	 	System.assert(false, 'A ffhttp_SystemException was not thrown');
 	 }
 
 	/**
