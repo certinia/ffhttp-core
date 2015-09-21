@@ -51,11 +51,20 @@ public with sharing class ffhttp_Client
 	public static final String CHARSET_UTF8 = 'UTF-8';
 	
 	/**
+	 * Credentials Interface
+	 */
+	public interface ICredentials
+	{	
+		String getTokenType();
+		String getAccessToken();
+	}
+
+	/**
 	 * Credentials
 	 * 
 	 * Wraps up the accessToken and the token type that is required to communicate with the API.
 	 */
-	public class Credentials 
+	public class Credentials implements ICredentials
 	{
 		private String m_tokenType;
 		private String m_accessToken;
@@ -69,9 +78,6 @@ public with sharing class ffhttp_Client
 			m_accessToken = accessToken;
 		}
 		
-		/**
-		 * Gets/Sets
-		 */
 		public String getTokenType()
 		{
 			return m_tokenType;
@@ -92,6 +98,17 @@ public with sharing class ffhttp_Client
 		}
 	}
 
+	/*
+	 * AbstractClient Interface
+	 */
+	public interface IAbstractClient
+    {
+        Boolean getCredentialsRequired();
+        IAbstractClient setCredentialsRequired(Boolean credentialsRequired);
+        ICredentials getCredentials();
+        IAbstractClient setCredentials(ICredentials credentials);
+    }
+
 	/**
 	 * AbstractClient
 	 *
@@ -100,25 +117,25 @@ public with sharing class ffhttp_Client
 	 * All requests made to a particular service have a reference to this so that the required 
 	 * credentials are set in any callout.
 	 */
-	public abstract class AbstractClient 
+	public abstract class AbstractClient implements IAbstractClient 
 	{
 		private Boolean m_credentialsRequired = true;	//Make the default for credentialsRequired true.
-		private Credentials m_credentials;
+		private ICredentials m_credentials;
 		
 		public Boolean getCredentialsRequired()
 		{
 			return m_credentialsRequired;
 		}
-		public AbstractClient setCredentialsRequired(Boolean credentialsRequired)
+		public IAbstractClient setCredentialsRequired(Boolean credentialsRequired)
 		{
 			m_credentialsRequired = credentialsRequired;
 			return this;
 		}
-		public Credentials getCredentials()
+		public ICredentials getCredentials()
 		{
 			return m_credentials;
 		}
-		public AbstractClient setCredentials(Credentials credentials)
+		public IAbstractClient setCredentials(ICredentials credentials)
 		{
 			m_credentials = credentials;
 			return this;
@@ -126,14 +143,25 @@ public with sharing class ffhttp_Client
 	}
 
 	/**
+	 * AbstractClientRequest Interface
+	 */
+	public interface IAbstractClientRequest
+	{
+		HttpRequest buildHttpRequest();
+		Object execute();
+		HttpResponse executeUnparsed();
+		Object parse(HttpResponse response);
+	}
+    
+	/**
 	 * AbstractClientRequest
 	 *
 	 * Abstract class that all API requests extend. 
 	 * This class deals with building the URL sent via HTTP to the particular service.
 	 */
-	public abstract class AbstractClientRequest 
+	public abstract class AbstractClientRequest implements IAbstractClientRequest
 	{
-		protected AbstractClient abstractClient {get;set;}
+		protected IAbstractClient abstractClient {get;set;}
 		protected String requestMethod {get;set;}
 		protected String endpoint {get;set;}
 		protected ffhttp_IHttpContent httpContent {get;set;}
@@ -145,7 +173,7 @@ public with sharing class ffhttp_Client
 		{
 		}
 
-		protected AbstractClientRequest(AbstractClient abstractClient, String endpoint, 
+		protected AbstractClientRequest(IAbstractClient abstractClient, String endpoint, 
 										String requestMethod, ffhttp_IHttpContent httpContent, 
 										ffhttp_IDeserialize responseDeserializer) 
 		{ 
@@ -177,7 +205,7 @@ public with sharing class ffhttp_Client
 	        req.setEndpoint(createEndpoint());
 	        req.setMethod(this.requestMethod);
 	        
-	        Credentials clientCredentials = abstractClient.getCredentials();
+	        ICredentials clientCredentials = abstractClient.getCredentials();
 	        if (clientCredentials != null) 
 	        {
 	        	String tokenType = clientCredentials.getTokenType();
