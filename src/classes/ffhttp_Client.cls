@@ -39,6 +39,7 @@ public with sharing class ffhttp_Client
 	
 	//Header statics
 	public static final String HTTP_HEADER_AUTHORIZATION = 'Authorization';
+	public static final String HTTP_HEADER_CONTENT_DISPOSITION = 'Content-Disposition';
 	public static final String HTTP_HEADER_CONTENT_LENGTH = 'Content-Length';
 	public static final String HTTP_HEADER_CONTENT_TYPE = 'Content-Type';
 	
