@@ -79,56 +79,110 @@ private class ffhttp_ClientTest
 	}
 	
 	/**
-	 * Check that JsonSerializable correctly serializes an object.
-	 */
+	* Check that JsonSerializable correctly serializes an object.
+	*/
 	static testMethod void testJsonSerializable()
 	{
 		JsonTest jsonBody = new JsonTest();
 		System.assertEquals(jsonBody.getHttpContentType(), 'application/json; charset=UTF-8');
-		
+
 		String serializedBody = jsonBody.serialize();
 		System.assertEquals(serializedBody, '{"test":"Test"}');
-		
+
 		serializedBody = (String)jsonBody.getHttpContent();
 		System.assertEquals(serializedBody, '{"test":"Test"}');
 	}
 
 	/**
-	 * Check ffhttp_JsonDeserializer 
+	 * Check that ffhttp_JsonDeserializer correctly deserializes an object
 	 */
-	 static testMethod void testJsonDeserializer()
-	 {
-	 	JsonTest test = new JsonTest();
-	 	
-	 	ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
-	 	System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
-	 	
-	 	JsonTest test2 = (JsonTest)jds.deserialize('{"test":"Test"}');
-	 	System.assertEquals(test2.getTest(), 'Test');
-	 }
+	static testMethod void testJsonDeserializer()
+	{
+		JsonTest test = new JsonTest();
 
-	 /**
-	 * Check ffhttp_JsonDeserializer 
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
+		System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
+
+		JsonTest test2 = (JsonTest)jds.deserialize('{"test":"Test"}');
+		System.assertEquals(test2.getTest(), 'Test');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer throws an exception for invalid JSON
 	 */
-	 static testMethod void testJsonDeserializerWithInvalidJson()
-	 {
-	 	JsonTest test = new JsonTest();
-	 	
-	 	ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
-	 	System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
-	 	
-	 	try 
-	 	{
-	 		JsonTest test2 = (JsonTest)jds.deserialize('{"invalid json test}');
-	 	}
-	 	catch (Exception e)
-	 	{
-	 		System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
-	 		return;
-	 	}
-	 	
-	 	System.assert(false, 'A ffhttp_SystemException was not thrown');
-	 }
+	static testMethod void testJsonDeserializerWithInvalidJson()
+	{
+		JsonTest test = new JsonTest();
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
+		System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
+
+		try 
+		{
+			JsonTest test2 = (JsonTest)jds.deserialize('{"invalid json test}');
+		}
+		catch (Exception e)
+		{
+			System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
+			return;
+		}
+
+		System.assert(false, 'A ffhttp_SystemException was not thrown');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer correctly deserializes a string with a field to replace
+	 */
+	static testMethod void testJsonDeserializerWithAFieldToReplace()
+	{
+		Map<String, String> fieldsToReplace = new Map<String, String>();
+		fieldsToReplace.put('testing', 'test');
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class, fieldsToReplace);
+
+		JsonTest test = (JsonTest)jds.deserialize('{"testing":"Test"}');
+		System.assertEquals(test.getTest(), 'Test');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer correctly deserializes a string with multiple fields to replace
+	 */
+	static testMethod void testJsonDeserializerWithMultipleFieldsToReplace()
+	{
+		Map<String, String> fieldsToReplace = new Map<String, String>();
+		fieldsToReplace.put('testing', 'test');
+		fieldsToReplace.put('testing2', 'test2');
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest2.class, fieldsToReplace);
+
+		JsonTest2 test = (JsonTest2)jds.deserialize('{"testing":"Test","testing2":"Test2"}');
+		System.assertEquals(test.getTest(), 'Test');
+		System.assertEquals(test.getTest2(), 'Test2');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer replaces all fields with the same name
+	 */
+	static testMethod void testJsonDeserializerWithFieldsToReplaceCreatingDuplicate()
+	{
+		Map<String, String> fieldsToReplace = new Map<String, String>();
+		fieldsToReplace.put('testing', 'test');
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class, fieldsToReplace);
+
+		try 
+		{
+			JsonTest test = (JsonTest)jds.deserialize('{"testing":"Test","testing":"Test"}');
+		}
+		catch (Exception e)
+		{
+			System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
+			System.assert(e.getCause() instanceOf System.JSONException, 'System.JSONException should be the cause');
+			return;
+		}
+
+		System.assert(false, 'A ffhttp_SystemException was not thrown');
+	}
 
 	/**
 	 * Check that to send a ffhttp_Client request the AbstractClient must be set.
@@ -483,10 +537,20 @@ private class ffhttp_ClientTest
 		{
 			return test;
 		}
-		public JsonTest setTest(String test)
+	}
+
+	class JsonTest2 extends ffhttp_AbstractJsonSerializable
+	{
+		private String test = 'Test';
+		private String test2 = 'Test2';
+		
+		public String getTest()
 		{
-			this.test = test;
-			return this;
+			return test;
+		}
+		public String getTest2()
+		{
+			return test2;
 		}
 	}
 	
