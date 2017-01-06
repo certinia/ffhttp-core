@@ -270,7 +270,7 @@ public with sharing class ffhttp_Client
 			
 			if (endpoint.endsWith(HTTP_REQUEST_ENDPOINT_SEPARATOR)) 
 			{
-				endpoint = endpoint.subString(0, endpoint.length() - 1);
+				endpoint = endpoint.substring(0, endpoint.length() - 1);
 			}
 			
 			return endpoint;
