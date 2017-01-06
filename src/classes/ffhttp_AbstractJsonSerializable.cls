@@ -49,7 +49,7 @@ public abstract class ffhttp_AbstractJsonSerializable implements ffhttp_IHttpCon
 	/**
 	 * ffhttp_ISerialize implementation
 	 */ 
-	public String serialize() 
+	public virtual String serialize() 
 	{
 		return JSON.serialize(this);
 	}
