@@ -39,6 +39,7 @@ public with sharing class ffhttp_Client
 	
 	//Header statics
 	public static final String HTTP_HEADER_AUTHORIZATION = 'Authorization';
+	public static final String HTTP_HEADER_CONTENT_DISPOSITION = 'Content-Disposition';
 	public static final String HTTP_HEADER_CONTENT_LENGTH = 'Content-Length';
 	public static final String HTTP_HEADER_CONTENT_TYPE = 'Content-Type';
 	
@@ -269,7 +270,7 @@ public with sharing class ffhttp_Client
 			
 			if (endpoint.endsWith(HTTP_REQUEST_ENDPOINT_SEPARATOR)) 
 			{
-				endpoint = endpoint.subString(0, endpoint.length() - 1);
+				endpoint = endpoint.substring(0, endpoint.length() - 1);
 			}
 			
 			return endpoint;

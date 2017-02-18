@@ -33,22 +33,45 @@ public with sharing class ffhttp_JsonDeserializer implements ffhttp_IDeserialize
 {
 	private static final String JSON_DESERIALIZATION_ERROR = 'Could not deserialize JSON';
 
-	private System.Type m_apexType;
+    private static final String DOUBLE_QUOTE = '"';
+    private static final String DOUBLE_QUOTE_COLON = DOUBLE_QUOTE + ':';
+    private static final String REGULAR_EXPRESSION = '"\\s{0,}:';
 
-	public ffhttp_JsonDeserializer(System.Type apexType) 
-	{
-		m_apexType = apexType;
-	}
+    private System.Type m_apexType;
+    private Map<String, String> m_fieldsToReplace;
 
-	public Object deserialize(String jsonString) 
-	{
-		try 
-		{
-			return m_apexType == null ? JSON.deserializeUntyped(jsonString) : JSON.deserialize(jsonString, m_apexType);
-		}
-		catch (Exception e)
-		{
-			throw new ffhttp_SystemException(JSON_DESERIALIZATION_ERROR, e);
-		}
-	}
+    public ffhttp_JsonDeserializer(System.Type apexType) 
+    {
+        this(apexType, null);
+    }
+    
+    public ffhttp_JsonDeserializer(System.Type apexType, Map<String, String> fieldsToReplace)
+    {
+        m_apexType = apexType;
+        m_fieldsToReplace = fieldsToReplace;
+    }
+
+    public Object deserialize(String jsonString) 
+    {
+        try 
+        {
+            // In some cases, external APIs may use APEX keywords as field names. To make deserialization easier these fields can be renamed using this map.
+            if (m_fieldsToReplace != null)
+            {
+             	Set<String> fields = m_fieldsToReplace.keySet();
+             	for (String field : fields)
+             	{
+             		String replacement = m_fieldsToReplace.get(field);
+             		jsonString = jsonString.replaceAll(DOUBLE_QUOTE + field + REGULAR_EXPRESSION, DOUBLE_QUOTE + replacement + DOUBLE_QUOTE_COLON);
+             	}
+            }
+        
+            return m_apexType == null ? JSON.deserializeUntyped(jsonString) : JSON.deserialize(jsonString, m_apexType);
+        }
+        catch (Exception e)
+        {
+            System.debug(LoggingLevel.ERROR, jsonString);
+            throw new ffhttp_SystemException(JSON_DESERIALIZATION_ERROR, e);
+        }
+    }
 }

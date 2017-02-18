@@ -79,56 +79,110 @@ private class ffhttp_ClientTest
 	}
 	
 	/**
-	 * Check that JsonSerializable correctly serializes an object.
-	 */
+	* Check that JsonSerializable correctly serializes an object.
+	*/
 	static testMethod void testJsonSerializable()
 	{
 		JsonTest jsonBody = new JsonTest();
 		System.assertEquals(jsonBody.getHttpContentType(), 'application/json; charset=UTF-8');
-		
+
 		String serializedBody = jsonBody.serialize();
 		System.assertEquals(serializedBody, '{"test":"Test"}');
-		
+
 		serializedBody = (String)jsonBody.getHttpContent();
 		System.assertEquals(serializedBody, '{"test":"Test"}');
 	}
 
 	/**
-	 * Check ffhttp_JsonDeserializer 
+	 * Check that ffhttp_JsonDeserializer correctly deserializes an object
 	 */
-	 static testMethod void testJsonDeserializer()
-	 {
-	 	JsonTest test = new JsonTest();
-	 	
-	 	ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
-	 	System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
-	 	
-	 	JsonTest test2 = (JsonTest)jds.deserialize('{"test":"Test"}');
-	 	System.assertEquals(test2.getTest(), 'Test');
-	 }
+	static testMethod void testJsonDeserializer()
+	{
+		JsonTest test = new JsonTest();
 
-	 /**
-	 * Check ffhttp_JsonDeserializer 
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
+		System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
+
+		JsonTest test2 = (JsonTest)jds.deserialize('{"test":"Test"}');
+		System.assertEquals(test2.getTest(), 'Test');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer throws an exception for invalid JSON
 	 */
-	 static testMethod void testJsonDeserializerWithInvalidJson()
-	 {
-	 	JsonTest test = new JsonTest();
-	 	
-	 	ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
-	 	System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
-	 	
-	 	try 
-	 	{
-	 		JsonTest test2 = (JsonTest)jds.deserialize('{"invalid json test}');
-	 	}
-	 	catch (Exception e)
-	 	{
-	 		System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
-	 		return;
-	 	}
-	 	
-	 	System.assert(false, 'A ffhttp_SystemException was not thrown');
-	 }
+	static testMethod void testJsonDeserializerWithInvalidJson()
+	{
+		JsonTest test = new JsonTest();
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class);
+		System.assert(jds != null, 'ffhttp_JsonDeserializer should not be null');
+
+		try 
+		{
+			JsonTest test2 = (JsonTest)jds.deserialize('{"invalid json test}');
+		}
+		catch (Exception e)
+		{
+			System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
+			return;
+		}
+
+		System.assert(false, 'A ffhttp_SystemException was not thrown');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer correctly deserializes a string with a field to replace
+	 */
+	static testMethod void testJsonDeserializerWithAFieldToReplace()
+	{
+		Map<String, String> fieldsToReplace = new Map<String, String>();
+		fieldsToReplace.put('testing', 'test');
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class, fieldsToReplace);
+
+		JsonTest test = (JsonTest)jds.deserialize('{"testing":"Test"}');
+		System.assertEquals(test.getTest(), 'Test');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer correctly deserializes a string with multiple fields to replace
+	 */
+	static testMethod void testJsonDeserializerWithMultipleFieldsToReplace()
+	{
+		Map<String, String> fieldsToReplace = new Map<String, String>();
+		fieldsToReplace.put('testing', 'test');
+		fieldsToReplace.put('testing2', 'test2');
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest2.class, fieldsToReplace);
+
+		JsonTest2 test = (JsonTest2)jds.deserialize('{"testing":"Test","testing2":"Test2"}');
+		System.assertEquals(test.getTest(), 'Test');
+		System.assertEquals(test.getTest2(), 'Test2');
+	}
+
+	/**
+	 * Check that ffhttp_JsonDeserializer replaces all fields with the same name
+	 */
+	static testMethod void testJsonDeserializerWithFieldsToReplaceCreatingDuplicate()
+	{
+		Map<String, String> fieldsToReplace = new Map<String, String>();
+		fieldsToReplace.put('testing', 'test');
+
+		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class, fieldsToReplace);
+
+		try 
+		{
+			JsonTest test = (JsonTest)jds.deserialize('{"testing":"Test","testing":"Test"}');
+		}
+		catch (Exception e)
+		{
+			System.assert(e instanceOf ffhttp_SystemException, 'ffhttp_SystemException should be thrown');
+			System.assert(e.getCause() instanceOf System.JSONException, 'System.JSONException should be the cause');
+			return;
+		}
+
+		System.assert(false, 'A ffhttp_SystemException was not thrown');
+	}
 
 	/**
 	 * Check that to send a ffhttp_Client request the AbstractClient must be set.
@@ -435,6 +489,42 @@ private class ffhttp_ClientTest
 		System.assertEquals(authTokenResponse.refresh_token, '1/xEoDL4iW3cxlI7yDbSRFYNG01kVKM2C-259HOF2aQbI');
 	}
 	
+	/**
+	 * ffhttp_MultipartMimeAttachment tests
+	 */
+	static testMethod void testMultipartMimeAttachment()
+    {
+        Blob fileABlob = EncodingUtil.base64Decode('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAgICAgICAgICAgMDAwMDAwMDAwP/2wBDAQEBAQEBAQIBAQICAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCAAKAAoDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAP/xAAmEAAAAwMNAAAAAAAAAAAAAAAAFhfI6PAYKCk2R2ZnaoaJmKn4/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJ1euwWNClEi8WE6TqSxg6S0dsdR2joB5Hcmdd6ywCJo7EzLu2WARGQDAf/Z');
+        Blob fileBBlob = EncodingUtil.base64Decode('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAgICAgICAgICAgMDAwMDAwMDAwP/2wBDAQEBAQEBAQIBAQICAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCAAKAAoDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAkEAABAwIFBQEAAAAAAAAAAAAFAwQHAgYACMjo8Akoaomp+P/EABYBAQEBAAAAAAAAAAAAAAAAAAADBf/EABwRAAMBAQEBAQEAAAAAAAAAAAECAwQABREhEv/aAAwDAQACEQMRAD8AigArOOQQW3RyxYAPjkSNCsXB8+dHnbYZxgzRYtljV0XQSy43NbxaP0MqNNTl+RdxO/thaHqlnC0RKxBXX06ZQimaCZ5lzOaBQWZnYhR8H9O5Z3b4P1nZmY/rEkk9oet6en2vV0+xsXOmvXopZ1hCGWCvVy7COXLOObNIMxE4Z5ShFPk5TSaqorfkfZNtd+ZeK9n852j6JtLvrLw5znPADw53/9k=');
+        Blob fileCBlob = EncodingUtil.base64Decode('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAgICAgICAgICAgMDAwMDAwMDAwP/2wBDAQEBAQEBAQIBAQICAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCAAMAAwDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAP/xAAtEAAAAgQLCQAAAAAAAAAAAAAWFwA3OGcYGSk2OUdJZoen8Gl3hoiJmKi4x//EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCc3rsBjgUIgXtYLouoLDnQWTtTpOydAHc5WeKqg8m2TnN7OJAbucLPgbKvKcpvBuziQHrVrpLUS2ot1A//2Q==');
+        
+        ffhttp_MultipartMimeAttachment body1 = new ffhttp_MultipartMimeAttachment();
+        body1.writeBoundary();
+        body1.writeBodyParameter('key', 'value');
+        body1.writeBoundary();
+        body1.writeFile('key', 'value', 'image/jpeg', fileABlob);
+        body1.writeEndBoundary();
+
+        ffhttp_MultipartMimeAttachment body2 = new ffhttp_MultipartMimeAttachment();
+        body2.writeBoundary();
+        body2.writeBodyParameter('key', 'value');
+        body2.writeBoundary();
+        body2.writeFile('key', 'value', 'image/jpeg', fileBBlob);
+        body2.writeEndBoundary();
+
+        ffhttp_MultipartMimeAttachment body3 = new ffhttp_MultipartMimeAttachment();
+        body3.writeBoundary();
+        body3.writeBodyParameter('key', 'value');
+        body3.writeBoundary();
+        body3.writeFile('key', 'value', 'image/jpeg', fileCBlob);
+        body3.writeEndBoundary();
+
+        System.assertEquals(body1.getHttpContentType(), 'multipart/form-data; charset="UTF-8"; boundary="1ff13444ed8140c7a32fc4e6451aa76d"');
+        System.assertEquals(EncodingUtil.base64Encode((Blob)body1.getHttpContent()), 'LS0xZmYxMzQ0NGVkODE0MGM3YTMyZmM0ZTY0NTFhYTc2ZA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJrZXkiICANCg0KdmFsdWUgIA0KLS0xZmYxMzQ0NGVkODE0MGM3YTMyZmM0ZTY0NTFhYTc2ZA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJrZXkiOyBmaWxlbmFtZT0idmFsdWUiIA0KQ29udGVudC1UeXBlOiBpbWFnZS9qcGVnICANCg0K/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAgICAgICAgICAgMDAwMDAwMDAwP/2wBDAQEBAQEBAQIBAQICAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCAAKAAoDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAP/xAAmEAAAAwMNAAAAAAAAAAAAAAAAFhfI6PAYKCk2R2ZnaoaJmKn4/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJ1euwWNClEi8WE6TqSxg6S0dsdR2joB5Hcmdd6ywCJo7EzLu2WARGQDAf/ZDQotLTFmZjEzNDQ0ZWQ4MTQwYzdhMzJmYzRlNjQ1MWFhNzZkLS0=');
+        System.assertEquals(EncodingUtil.base64Encode((Blob)body2.getHttpContent()), 'LS0xZmYxMzQ0NGVkODE0MGM3YTMyZmM0ZTY0NTFhYTc2ZA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJrZXkiICANCg0KdmFsdWUgIA0KLS0xZmYxMzQ0NGVkODE0MGM3YTMyZmM0ZTY0NTFhYTc2ZA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJrZXkiOyBmaWxlbmFtZT0idmFsdWUiIA0KQ29udGVudC1UeXBlOiBpbWFnZS9qcGVnICANCg0K/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAgICAgICAgICAgMDAwMDAwMDAwP/2wBDAQEBAQEBAQIBAQICAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCAAKAAoDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAkEAABAwIFBQEAAAAAAAAAAAAFAwQHAgYACMjo8Akoaomp+P/EABYBAQEBAAAAAAAAAAAAAAAAAAADBf/EABwRAAMBAQEBAQEAAAAAAAAAAAECAwQABREhEv/aAAwDAQACEQMRAD8AigArOOQQW3RyxYAPjkSNCsXB8+dHnbYZxgzRYtljV0XQSy43NbxaP0MqNNTl+RdxO/thaHqlnC0RKxBXX06ZQimaCZ5lzOaBQWZnYhR8H9O5Z3b4P1nZmY/rEkk9oet6en2vV0+xsXOmvXopZ1hCGWCvVy7COXLOObNIMxE4Z5ShFPk5TSaqorfkfZNtd+ZeK9n852j6JtLvrLw5znPADw53/9kNCi0tMWZmMTM0NDRlZDgxNDBjN2EzMmZjNGU2NDUxYWE3NmQtLQ==');
+        System.assertEquals(EncodingUtil.base64Encode((Blob)body3.getHttpContent()), 'LS0xZmYxMzQ0NGVkODE0MGM3YTMyZmM0ZTY0NTFhYTc2ZA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJrZXkiICANCg0KdmFsdWUgIA0KLS0xZmYxMzQ0NGVkODE0MGM3YTMyZmM0ZTY0NTFhYTc2ZA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJrZXkiOyBmaWxlbmFtZT0idmFsdWUiIA0KQ29udGVudC1UeXBlOiBpbWFnZS9qcGVnICANCg0K/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAgICAgICAgICAgMDAwMDAwMDAwP/2wBDAQEBAQEBAQIBAQICAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCAAMAAwDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAP/xAAtEAAAAgQLCQAAAAAAAAAAAAAWFwA3OGcYGSk2OUdJZoen8Gl3hoiJmKi4x//EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCc3rsBjgUIgXtYLouoLDnQWTtTpOydAHc5WeKqg8m2TnN7OJAbucLPgbKvKcpvBuziQHrVrpLUS2ot1A//2Q0KLS0xZmYxMzQ0NGVkODE0MGM3YTMyZmM0ZTY0NTFhYTc2ZC0t');
+    }
+
 	/************************************************************************************************************
 	 * Test classes
 	 ************************************************************************************************************/
@@ -447,10 +537,20 @@ private class ffhttp_ClientTest
 		{
 			return test;
 		}
-		public JsonTest setTest(String test)
+	}
+
+	class JsonTest2 extends ffhttp_AbstractJsonSerializable
+	{
+		private String test = 'Test';
+		private String test2 = 'Test2';
+		
+		public String getTest()
 		{
-			this.test = test;
-			return this;
+			return test;
+		}
+		public String getTest2()
+		{
+			return test2;
 		}
 	}
 	
