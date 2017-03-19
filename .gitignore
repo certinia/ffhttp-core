@@ -1,9 +1,9 @@
 *.sublime-build
 *.sublime-workspace
+*.sublime-project
 .DS_Store
 .project
 .settings/
-.sublime-project
 .tm_properties
 Referenced Packages/
 build.properties
