@@ -12,6 +12,7 @@
         <members>ffhttp_IHttpContent</members>
         <members>ffhttp_ISerialize</members>
         <members>ffhttp_JsonDeserializer</members>
+        <members>ffhttp_MultipartMimeAttachment</members>
         <members>ffhttp_OAuthClient</members>
         <members>ffhttp_SystemException</members>
         <name>ApexClass</name>
