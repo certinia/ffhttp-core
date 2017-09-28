@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, FinancialForce.com, inc
+ * Copyright (c) 2014-2017, FinancialForce.com, inc
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -29,47 +29,28 @@
  *
  * Extension of exception that wraps up a status code (HTTP Error Code) and associated error (status).
  */
-public with sharing class ffhttp_AppException extends Exception 
+public with sharing class ffhttp_AppException extends Exception
 {
-	public static final Integer ERROR_HTTP_BAD_REQUEST = 400;	
-	public static final Integer ERROR_HTTP_UNAUTHORIZED = 401;
-	public static final Integer ERROR_HTTP_PAYMENT_REQUIRED = 402; 
-	public static final Integer ERROR_HTTP_FORBIDDEN = 403;
-	public static final Integer ERROR_HTTP_NOT_FOUND = 404;
-	public static final Integer ERROR_HTTP_METHOD_NOT_ALLOWED = 405;
-	public static final Integer ERROR_HTTP_NOT_ACCEPTABLE = 406;
-	public static final Integer ERROR_HTTP_PROXY_AUTHENTICATION_REQUIRED = 407;
-	public static final Integer ERROR_HTTP_REQUEST_TIMEOUT = 408;
-	public static final Integer ERROR_HTTP_CONFLICT = 409;
-	public static final Integer ERROR_HTTP_GONE = 410;
-	public static final Integer ERROR_HTTP_LENGTH_REQUIRED = 411;
-	public static final Integer ERROR_HTTP_PRECONDITION_FAILED = 412;
-	public static final Integer ERROR_HTTP_REQUEST_ENTITY_TOO_LARGE = 413;
-	public static final Integer ERROR_HTTP_REQUEST_URI_TOO_LONG = 414;
-	public static final Integer ERROR_HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
-	public static final Integer ERROR_HTTP_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
-	public static final Integer ERROR_HTTP_EXPECTATION_FAILED = 417;
-		
 	private Integer m_statusCode;
 	private String m_status;
-	
-	public ffhttp_AppException(Integer statusCode, String status) 
+
+	public ffhttp_AppException(Integer statusCode, String status)
 	{
 		m_statusCode = statusCode;
 		m_status = status;
 	}
-	
-	public override String getMessage() 
+
+	public override String getMessage()
 	{
 		return m_status;
 	}
-	
-	public Integer getStatusCode() 
+
+	public Integer getStatusCode()
 	{
 		return m_statusCode;
 	}
-	
-	public String getStatus() 
+
+	public String getStatus()
 	{
 		return m_status;
 	}
