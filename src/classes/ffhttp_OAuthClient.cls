@@ -132,11 +132,9 @@ public with sharing class ffhttp_OAuthClient extends ffhttp_Client.AbstractClien
 
 	public class AccessTokenResponse extends ffhttp_AbstractJsonSerializable
 	{
-		/* beautify preserve:start */
 		public String access_token { get; set; }
 		public String token_type { get; set; }
 		public String refresh_token { get; set; }
 		public Decimal expires_in { get; set; }
-		/* beautify preserve:end */
 	}
 }
