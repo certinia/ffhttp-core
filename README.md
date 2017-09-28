@@ -1,10 +1,9 @@
 Apex HTTP Callout Framework
 ===========================
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=financialforcedev&repo=ffhttp-core">
-    <img alt="Deploy to Salesforce"
-        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
-</a>
+[![Deploy to scratch org](https://deploy-to-sfdx.com/dist/assets/images/DeployToSFDX.svg)](https://deploy-to-sfdx.com) - Use this button to deploy into an empty scratch org via SFDX.
+[![Deploy to SF](https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png)](https://githubsfdeploy.herokuapp.com?owner=financialforcedev&repo=ffhttp-core) - Use this button to deploy into an existing org.
+
 
 Introduction
 ------------
