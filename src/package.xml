@@ -18,12 +18,7 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <members>ffhttp_AbstractClientCredentialsNotSet</members>
-        <members>ffhttp_AbstractClientNotSet</members>
-        <members>ffhttp_NullAccessToken</members>
-        <members>ffhttp_NullBlob</members>
-        <members>ffhttp_NullContentType</members>
-        <members>ffhttp_NullTokenType</members>
+        <members>*</members>
         <name>CustomLabel</name>
     </types>
     <types>
