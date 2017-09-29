@@ -64,7 +64,7 @@ public with sharing class ffhttp_OAuthClient extends ffhttp_Client.AbstractClien
 	{
 		String url = String.format(
 			FORMAT_AUTHORIZATION_URL,
-			new List < String >
+			new List<String>
 			{
 				connectorType.getAuthorizationEndpoint(),
 				EncodingUtil.urlEncode(connectorType.getClientId(), ffhttp_Client.CHARSET_UTF8),

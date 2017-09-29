@@ -72,7 +72,7 @@ private class ffhttp_JsonDeserializerTest
 	 */
 	static testMethod void testJsonDeserializerWithAFieldToReplace()
 	{
-		Map < String, String > fieldsToReplace = new Map < String, String > ();
+		Map<String, String> fieldsToReplace = new Map<String, String>();
 		fieldsToReplace.put('testing', 'test');
 
 		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class, fieldsToReplace);
@@ -86,7 +86,7 @@ private class ffhttp_JsonDeserializerTest
 	 */
 	static testMethod void testJsonDeserializerWithMultipleFieldsToReplace()
 	{
-		Map < String, String > fieldsToReplace = new Map < String, String > ();
+		Map<String, String> fieldsToReplace = new Map<String, String>();
 		fieldsToReplace.put('testing', 'test');
 		fieldsToReplace.put('testing2', 'test2');
 
@@ -102,7 +102,7 @@ private class ffhttp_JsonDeserializerTest
 	 */
 	static testMethod void testJsonDeserializerWithFieldsToReplaceCreatingDuplicate()
 	{
-		Map < String, String > fieldsToReplace = new Map < String, String > ();
+		Map<String, String> fieldsToReplace = new Map<String, String>();
 		fieldsToReplace.put('testing', 'test');
 
 		ffhttp_JsonDeserializer jds = new ffhttp_JsonDeserializer(JsonTest.class, fieldsToReplace);

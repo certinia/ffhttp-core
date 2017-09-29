@@ -32,7 +32,7 @@
  */
 public abstract class ffhttp_AbstractFormDataSerializable implements ffhttp_IHttpContent
 {
-	private List < String > m_parameters = new List < String > ();
+	private List<String> m_parameters = new List<String>();
 
 	protected void addParameterIfNotEmpty(String parameter, String value, Boolean encode)
 	{

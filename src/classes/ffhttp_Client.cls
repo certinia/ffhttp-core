@@ -395,9 +395,9 @@ public with sharing class ffhttp_Client
 		protected ffhttp_IHttpContent httpContent {get;set;}
 		protected ffhttp_IDeserialize responseDeserializer {get;set;}
 	
-		private Map < String, Object > m_params = new Map < String, Object > ();
+		private Map<String, Object> m_params = new Map<String, Object>();
 
-		private Map < String, String > m_extraHeaders = new Map < String, String > ();
+		private Map<String, String> m_extraHeaders = new Map<String, String>();
 
 		// For a lot of callouts the parameters are added as a JSON body rather than in the URL.
 		// This flag switches between the two approaches.
@@ -509,7 +509,7 @@ public with sharing class ffhttp_Client
 
 			if (!m_paramsAsJson)
 			{
-				Set < String > keys = m_params.keySet();
+				Set<String> keys = m_params.keySet();
 				if (keys.size() > 0)
 				{
 					retval += HTTP_REQUEST_PARAMETER_PREFIX;
@@ -600,7 +600,7 @@ public with sharing class ffhttp_Client
 		{
 			HttpRequest request = buildHttpRequest();
 
-			List < String > curlHeaders = new List < String > ();
+			List<String> curlHeaders = new List<String>();
 
 			for (String header: m_extraHeaders.keySet())
 			{
