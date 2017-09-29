@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2017, FinancialForce.com, inc
+ * Copyright (c) 2017, FinancialForce.com, inc
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -25,33 +25,40 @@
 **/
 
 /**
- * ffhttp_AppException
- *
- * Extension of exception that wraps up a status code (HTTP Error Code) and associated error (status).
+ * ffhttp_AbstractFormDataSerializable 
+ * 
+ * Abstract class to allow the custom serialisation of form encoded objects.
+ * This class extends IHttpContent which allows these objects to be sent in HTTP requests.
  */
-public with sharing class ffhttp_AppException extends Exception
+public abstract class ffhttp_AbstractFormDataSerializable implements ffhttp_IHttpContent
 {
-	private Integer m_statusCode;
-	private String m_status;
+	private List<String> m_parameters = new List<String>();
 
-	public ffhttp_AppException(Integer statusCode, String status)
+	protected void addParameterIfNotEmpty(String parameter, String value, Boolean encode)
 	{
-		m_statusCode = statusCode;
-		m_status = status;
+		if (String.isNotBlank(value))
+		{
+			String localValue = value;
+			if (encode)
+			{
+				localValue = EncodingUtil.urlEncode(value, ffhttp_Client.CHARSET_UTF8);
+			}
+
+			String parameterAndValue = parameter + ffhttp_Client.HTTP_REQUEST_PARAMETER_SEPARATOR + localValue;
+			m_parameters.add(parameterAndValue);
+		}
 	}
 
-	public override String getMessage()
+	/**
+	 * ffhttp_IHttpContent implementation
+	 */
+	public String getHttpContentType()
 	{
-		return m_status;
+		return ffhttp_Client.CONTENT_TYPE_WWW_FORM_ENCODED;
 	}
 
-	public Integer getStatusCode()
+	public Object getHttpContent()
 	{
-		return m_statusCode;
-	}
-
-	public String getStatus()
-	{
-		return m_status;
+		return String.join(m_parameters, ffhttp_Client.HTTP_REQUEST_ENDPOINT_SEPARATOR);
 	}
 }

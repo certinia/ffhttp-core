@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2017, FinancialForce.com, inc
+ * Copyright (c) 2017, FinancialForce.com, inc
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -25,33 +25,61 @@
 **/
 
 /**
- * ffhttp_AppException
+ * ffhttp_AbstractJsonSerializableTest
  *
- * Extension of exception that wraps up a status code (HTTP Error Code) and associated error (status).
+ * Test class for ffhttp_AbstractJsonSerializable.
  */
-public with sharing class ffhttp_AppException extends Exception
+@isTest
+private class ffhttp_AbstractJsonSerializableTest
 {
-	private Integer m_statusCode;
-	private String m_status;
-
-	public ffhttp_AppException(Integer statusCode, String status)
+	static testMethod void getHttpContentType_returnsCorrectContentType()
 	{
-		m_statusCode = statusCode;
-		m_status = status;
+		// Given
+		JsonTest jsonBody = new JsonTest();
+
+		// When
+		String contentType = jsonBody.getHttpContentType();
+
+		// Then
+		System.assertEquals(contentType, 'application/json; charset=UTF-8');
 	}
 
-	public override String getMessage()
+	static testMethod void serialize_serializesObjectCorrectly()
 	{
-		return m_status;
+		// Given
+		JsonTest jsonBody = new JsonTest();
+
+		// When
+		String serializedBody = jsonBody.serialize();
+
+		// Then
+		System.assertEquals(serializedBody, '{"test":"Test"}');
 	}
 
-	public Integer getStatusCode()
+	static testMethod void getHttpContent_serializesObjectCorrectly()
 	{
-		return m_statusCode;
+		// Given
+		JsonTest jsonBody = new JsonTest();
+
+		// When
+		String serializedBody = (String) jsonBody.getHttpContent();
+
+		// Then
+		System.assertEquals(serializedBody, '{"test":"Test"}');
 	}
 
-	public String getStatus()
+	/************************************************************************************************************
+	 * Test classes
+	 ************************************************************************************************************/
+
+	class JsonTest extends ffhttp_AbstractJsonSerializable
 	{
-		return m_status;
+		private String test = 'Test';
+
+		public String getTest()
+		{
+			return test;
+		}
 	}
+
 }

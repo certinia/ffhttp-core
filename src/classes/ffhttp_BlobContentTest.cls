@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2017, FinancialForce.com, inc
+ * Copyright (c) 2017, FinancialForce.com, inc
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -25,33 +25,57 @@
 **/
 
 /**
- * ffhttp_AppException
+ * ffhttp_BlobContentTest
  *
- * Extension of exception that wraps up a status code (HTTP Error Code) and associated error (status).
+ * Test class for ffhttp_BlobContent.
  */
-public with sharing class ffhttp_AppException extends Exception
+@isTest
+private class ffhttp_BlobContentTest
 {
-	private Integer m_statusCode;
-	private String m_status;
-
-	public ffhttp_AppException(Integer statusCode, String status)
+	static testMethod void constructor_initializedCorrectly()
 	{
-		m_statusCode = statusCode;
-		m_status = status;
+		// Given
+		Blob b = Blob.valueOf('Testing');
+
+		// When
+		ffhttp_BlobContent content = new ffhttp_BlobContent(b, 'application/json');
+
+		// Then
+		System.assertEquals(content.getHttpContent(), b);
+		System.assertEquals(content.getHttpContentType(), 'application/json');
 	}
 
-	public override String getMessage()
+	static testMethod void constructor_throwsException_forNullBlob()
 	{
-		return m_status;
+		try
+		{
+			// Given
+			new ffhttp_BlobContent(null, 'application/json');
+			System.assert(false, 'ffhttp_SystemException was not thrown');
+		}
+		catch (ffhttp_SystemException ex)
+		{
+			// Then
+			System.assertEquals(ex.getMessage(), 'Blob cannot be null');
+		}
 	}
 
-	public Integer getStatusCode()
+	/**
+	 * Test that if you try and create a BlobContent instance with no content type an exception is thrown
+	 */
+	static testMethod void constructor_throwsException_forNullContentType()
 	{
-		return m_statusCode;
-	}
-
-	public String getStatus()
-	{
-		return m_status;
+		try
+		{
+			// Given
+			Blob b = Blob.valueOf('Testing');
+			new ffhttp_BlobContent(b, null);
+			System.assert(false, 'ffhttp_SystemException was not thrown');
+		}
+		catch (ffhttp_SystemException ex)
+		{
+			// Then
+			System.assertEquals(ex.getMessage(), 'ContentType cannot be null');
+		}
 	}
 }

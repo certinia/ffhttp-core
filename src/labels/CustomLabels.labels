@@ -15,6 +15,20 @@
         <value>AbstractClient not set</value>
     </labels>
     <labels>
+        <fullName>ffhttp_InvalidStateAddingProtectedHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for invalid request</shortDescription>
+        <value>AbstractClientRequest: Invalid State: Cannot add protected header</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_InvalidStateJsonAndRequestBody</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for invalid request</shortDescription>
+        <value>AbstractClientRequest: Invalid State: A request cannot have both a request body and JSON parameters</value>
+    </labels>
+    <labels>
         <fullName>ffhttp_NullAccessToken</fullName>
         <language>en_US</language>
         <protected>true</protected>
@@ -36,10 +50,24 @@
         <value>ContentType cannot be null</value>
     </labels>
     <labels>
+        <fullName>ffhttp_NullNamedCredentialName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Named Credential Name cannot be null</shortDescription>
+        <value>Named Credential Name cannot be null</value>
+    </labels>
+    <labels>
         <fullName>ffhttp_NullTokenType</fullName>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>TokenType cannot be null</shortDescription>
         <value>TokenType cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_UnhandledRedirection</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for unhandled redirection</shortDescription>
+        <value>Response returned a 3xx Redirection error which is currently unhandled</value>
     </labels>
 </CustomLabels>

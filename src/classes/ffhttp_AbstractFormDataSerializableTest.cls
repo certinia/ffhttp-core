@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2017, FinancialForce.com, inc
+ * Copyright (c) 2017, FinancialForce.com, inc
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -25,33 +25,47 @@
 **/
 
 /**
- * ffhttp_AppException
+ * ffhttp_AbstractFormDataSerializableTest
  *
- * Extension of exception that wraps up a status code (HTTP Error Code) and associated error (status).
+ * Test class for ffhttp_AbstractFormDataSerializable.
  */
-public with sharing class ffhttp_AppException extends Exception
+@isTest
+private class ffhttp_AbstractFormDataSerializableTest
 {
-	private Integer m_statusCode;
-	private String m_status;
-
-	public ffhttp_AppException(Integer statusCode, String status)
+	static testMethod void getHttpContentType_returnsCorrectContentType()
 	{
-		m_statusCode = statusCode;
-		m_status = status;
+		// Given
+		FormDataTest body = new FormDataTest();
+
+		// When
+		String contentType = body.getHttpContentType();
+
+		// Then
+		System.assertEquals(contentType, 'application/x-www-form-urlencoded');
 	}
 
-	public override String getMessage()
+	static testMethod void getHttpContent_serializesObjectCorrectly()
 	{
-		return m_status;
+		// Given
+		FormDataTest body = new FormDataTest();
+
+		// When
+		String serializedBody = (String) body.getHttpContent();
+
+		// Then
+		System.assertEquals(serializedBody, 'test=Test&test2=Test+2');
 	}
 
-	public Integer getStatusCode()
-	{
-		return m_statusCode;
-	}
+	/************************************************************************************************************
+	 * Test classes
+	 ************************************************************************************************************/
 
-	public String getStatus()
+	class FormDataTest extends ffhttp_AbstractFormDataSerializable
 	{
-		return m_status;
+		public FormDataTest()
+		{
+			addParameterIfNotEmpty('test', 'Test', false);
+			addParameterIfNotEmpty('test2', 'Test 2', true);
+		}
 	}
 }

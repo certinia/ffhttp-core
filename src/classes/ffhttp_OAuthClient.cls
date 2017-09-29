@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014, FinancialForce.com, inc
+ * Copyright (c) 2014-2017, FinancialForce.com, inc
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -32,6 +32,23 @@
  */
 public with sharing class ffhttp_OAuthClient extends ffhttp_Client.AbstractClient
 {
+	// statics
+
+	// grant types
+	private static final String GRANT_TYPE_AUTHORIZATION_CODE = 'authorization_code';
+	private static final String GRANT_TYPE_REFRESH_TOKEN = 'refresh_token';
+
+	// format 
+	private static final String FORMAT_AUTHORIZATION_URL = '{0}?response_type=code&client_id={1}&redirect_uri={2}&state={3}&{4}';
+
+	// parameters
+	private static final String PARAMETER_CODE = 'code';
+	private static final String PARAMETER_GRANT_TYPE = 'grant_type';
+	private static final String PARAMETER_CLIENT_ID = 'client_id';
+	private static final String PARAMETER_CLIENT_SECRET = 'client_secret';
+	private static final String PARAMETER_REDIRECT_URI = 'redirect_uri';
+	private static final String PARAMETER_REFRESH_TOKEN = 'refresh_token';
+
 	/**
 	 * Constructor
 	 */
@@ -39,127 +56,80 @@ public with sharing class ffhttp_OAuthClient extends ffhttp_Client.AbstractClien
 	{
 		this.setCredentialsRequired(false);
 	}
-	
+
 	/**
 	 * Helper methods
 	 */
 	public String generateAuthorizationUrl(ffhttp_IConnectorType connectorType, String state)
 	{
 		String url = String.format(
-    		'{0}?response_type=code&client_id={1}&redirect_uri={2}&state={3}&{4}',
-    		new List<String>{
-    			connectorType.getAuthorizationEndpoint(),
-    			EncodingUtil.urlEncode(connectorType.getClientId(), ffhttp_Client.CHARSET_UTF8),
-    			EncodingUtil.urlEncode(connectorType.getRedirectUri(), ffhttp_Client.CHARSET_UTF8),
-    			state,
-    			connectorType.getExtraUrlParameters()
-    		}
+			FORMAT_AUTHORIZATION_URL,
+			new List<String>
+			{
+				connectorType.getAuthorizationEndpoint(),
+				EncodingUtil.urlEncode(connectorType.getClientId(), ffhttp_Client.CHARSET_UTF8),
+				EncodingUtil.urlEncode(connectorType.getRedirectUri(), ffhttp_Client.CHARSET_UTF8),
+				state,
+				connectorType.getExtraUrlParameters()
+			}
 		);
-	
+
 		return url;
 	}
-	
+
 	/*********************************************************************************************************
 	 * Requests
 	 *********************************************************************************************************/
-	 
-	public ExchangeAuthCodeRequest exchangeAuthCodeRequest(ffhttp_IConnectorType ct, String code) 
+
+	public ExchangeAuthCodeRequest exchangeAuthCodeRequest(ffhttp_IConnectorType ct, String code)
 	{
-		AuthCodeRequestBody content = new AuthCodeRequestBody(ct, 'authorization_code', code, null);
+		AuthCodeRequestBody content = new AuthCodeRequestBody(ct, GRANT_TYPE_AUTHORIZATION_CODE, code, null);
 		return new ExchangeAuthCodeRequest(this, ct.getTokenEndpoint(), content);
 	}
-	
+
 	public ExchangeRefreshTokenRequest exchangeRefreshTokenRequest(ffhttp_IConnectorType ct, String refreshToken)
-	{	
-		AuthCodeRequestBody content = new AuthCodeRequestBody(ct, 'refresh_token', null, refreshToken);
+	{
+		AuthCodeRequestBody content = new AuthCodeRequestBody(ct, GRANT_TYPE_REFRESH_TOKEN, null, refreshToken);
 		return new ExchangeRefreshTokenRequest(this, ct.getTokenEndpoint(), content);
 	}
-	
+
 	/*********************************************************************************************************
 	 * API Callout Inner Classes
 	 *********************************************************************************************************/
-	 
+
 	public class ExchangeAuthCodeRequest extends ffhttp_Client.AbstractClientRequest
 	{
 		public ExchangeAuthCodeRequest(ffhttp_Client.AbstractClient client, String endpoint, AuthCodeRequestBody httpContent)
 		{
-			super(client, endpoint, REQUEST_METHOD_POST, httpContent, new ffhttp_JsonDeserializer(AccessTokenResponse.class));	
+			super(client, endpoint, REQUEST_METHOD_POST, httpContent, new ffhttp_JsonDeserializer(AccessTokenResponse.class));
 		}
 	}
-	
+
 	public class ExchangeRefreshTokenRequest extends ffhttp_Client.AbstractClientRequest
 	{
 		ExchangeRefreshTokenRequest(ffhttp_Client.AbstractClient client, String endpoint, AuthCodeRequestBody httpContent)
 		{
-			super(client, endpoint, REQUEST_METHOD_POST, httpContent, new ffhttp_JsonDeserializer(AccessTokenResponse.class));	
-		} 
+			super(client, endpoint, REQUEST_METHOD_POST, httpContent, new ffhttp_JsonDeserializer(AccessTokenResponse.class));
+		}
 	}
-	
+
 	/*********************************************************************************************************
 	 * Inner Classes
 	 *********************************************************************************************************/
-	
-	class AuthCodeRequestBody implements ffhttp_IHttpContent 
+
+	class AuthCodeRequestBody extends ffhttp_AbstractFormDataSerializable
 	{
-		String grantType;
-		String code;
-		String clientId;
-		String clientSecret;
-		String redirectUri;
-		String refreshToken;
-		
 		public AuthCodeRequestBody(ffhttp_IConnectorType ct, String grantType, String code, String refreshToken)
 		{
-			this.clientId = ct.getClientId();
-			this.clientSecret = ct.getClientSecret();
-			this.redirectUri = ct.getRedirectUri();
-			
-			this.grantType = grantType;
-			this.code = code;
-			this.refreshToken = refreshToken;
-		}
-		
-		/**
-		 * IHttpContent implementation
-		 */
-		public String getHttpContentType()
-		{
-			return 'application/x-www-form-urlencoded';
-		}
-	
-		public Object getHttpContent()
-		{	
-			String content = '';
-			content = addParameterIfStringNotEmpty(content, 'code', code, false);
-			content = addParameterIfStringNotEmpty(content, 'grant_type', grantType, false);
-			content = addParameterIfStringNotEmpty(content, 'client_id', clientId, true);
-			content = addParameterIfStringNotEmpty(content, 'client_secret', clientSecret, true);
-			content = addParameterIfStringNotEmpty(content, 'redirect_uri', redirectUri, true);
-			content = addParameterIfStringNotEmpty(content, 'refresh_token', refreshToken, false);		
-			return content;
-		}
-		
-		private String addParameterIfStringNotEmpty(String content, String parameter, String value, Boolean encode)
-		{
-			if (String.isEmpty(value))
-			{
-				return content;
-			}
-			
-			if (!String.isEmpty(content))
-			{
-				content += ffhttp_Client.HTTP_REQUEST_ENDPOINT_SEPARATOR;
-			}
-			
-			if (encode)
-			{
-				value = EncodingUtil.urlEncode(value, ffhttp_Client.CHARSET_UTF8);
-			}
-			
-			return content += parameter + ffhttp_Client.HTTP_REQUEST_PARAMETER_SEPARATOR + value;
+			addParameterIfNotEmpty(PARAMETER_CODE, code, false);
+			addParameterIfNotEmpty(PARAMETER_GRANT_TYPE, grantType, false);
+			addParameterIfNotEmpty(PARAMETER_CLIENT_ID, ct.getClientId(), true);
+			addParameterIfNotEmpty(PARAMETER_CLIENT_SECRET, ct.getClientSecret(), true);
+			addParameterIfNotEmpty(PARAMETER_REDIRECT_URI, ct.getRedirectUri(), true);
+			addParameterIfNotEmpty(PARAMETER_REFRESH_TOKEN, refreshToken, false);
 		}
 	}
-	
+
 	public class AccessTokenResponse extends ffhttp_AbstractJsonSerializable
 	{
 		public String access_token { get; set; }
