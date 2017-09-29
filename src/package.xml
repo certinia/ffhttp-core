@@ -2,9 +2,13 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ffhttp-core</fullName>
     <types>
+        <members>ffhttp_AbstractFormDataSerializable</members>
+        <members>ffhttp_AbstractFormDataSerializableTest</members>
         <members>ffhttp_AbstractJsonSerializable</members>
+        <members>ffhttp_AbstractJsonSerializableTest</members>
         <members>ffhttp_AppException</members>
         <members>ffhttp_BlobContent</members>
+        <members>ffhttp_BlobContentTest</members>
         <members>ffhttp_Client</members>
         <members>ffhttp_ClientTest</members>
         <members>ffhttp_IConnectorType</members>
@@ -12,8 +16,11 @@
         <members>ffhttp_IHttpContent</members>
         <members>ffhttp_ISerialize</members>
         <members>ffhttp_JsonDeserializer</members>
+        <members>ffhttp_JsonDeserializerTest</members>
         <members>ffhttp_MultipartMimeAttachment</members>
+        <members>ffhttp_MultipartMimeAttachmentTest</members>
         <members>ffhttp_OAuthClient</members>
+        <members>ffhttp_OAuthClientTest</members>
         <members>ffhttp_SystemException</members>
         <name>ApexClass</name>
     </types>
