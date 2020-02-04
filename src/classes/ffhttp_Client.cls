@@ -422,11 +422,10 @@ public with sharing class ffhttp_Client
 		/**
 		 * Method to set returnsBlob based on the parameters provided.
 		 */
-		public AbstractClientRequest setReturnsBlob(Boolean returnsBlob) 
-+		{
-+			this.returnsBlob = returnsBlob;
-+			return this;
-+		}
+		public AbstractClientRequest setReturnsBlob(Boolean returnsBlob) {
+			this.returnsBlob = returnsBlob;
+			return this;
+		}
 
 		/**
 		 * Method to build the HTTP Request based on the parameters provided.

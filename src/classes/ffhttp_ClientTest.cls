@@ -384,22 +384,29 @@ private class ffhttp_ClientTest
 	}
 	
 	/**
-+	 * Check that a request with a Blob response is dealt with appropriately.
-+	 */
-+	static testMethod void testExecuteValidBlobResponse()
-+	{
-+		NoCredentialHttpClient client = new NoCredentialHttpClient();
-+
-+		Test.setMock(HttpCalloutMock.class, new HttpResponseSuccess());
-+
-+		HttpClientRequest clientRequest = new HttpClientRequest(client, 'TestEndpoint', 'POST', null, null);
-+        clientRequest.setReturnsBlob(true);
-+        
-+		Object response = clientRequest.execute();
-+        
-+		System.assert(response != null, 'Response should not be null');
-+		System.assert(response instanceof Blob, 'Response should be an instance of Blob');
-+	}
+	 * Check that a request with a Blob response is dealt with appropriately.
+	 */
+	@isTest
+	private static void testExecuteValidBlobResponse() {
+
+
+		// Setup 
+		NoCredentialHttpClient client = new NoCredentialHttpClient();
+
+		Test.setMock(HttpCalloutMock.class, new HttpResponseSuccess());
+
+
+		// Exercise
+		HttpClientRequest clientRequest = new HttpClientRequest(client, 'TestEndpoint', 'POST', null, null);
+        clientRequest.setReturnsBlob(true);
+        
+		Object response = clientRequest.execute();
+        
+
+		// Verify
+		System.assert(response != null, 'Response should not be null');
+		System.assert(response instanceof Blob, 'Response should be an instance of Blob');
+	}
 
 	/**
 	 * Check error for invalid responses
