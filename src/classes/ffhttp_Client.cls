@@ -404,6 +404,7 @@ public with sharing class ffhttp_Client
 		private Boolean m_paramsAsJson = false;
 
 		private String m_clientCertificateName = null;
+		private Boolean returnsBlob = false;
 
 		protected AbstractClientRequest()
 		{}
@@ -417,6 +418,15 @@ public with sharing class ffhttp_Client
 			this.httpContent = httpContent;
 			this.responseDeserializer = responseDeserializer;
 		}
+
+		/**
+		 * Method to set returnsBlob based on the parameters provided.
+		 */
+		public AbstractClientRequest setReturnsBlob(Boolean returnsBlob) 
++		{
++			this.returnsBlob = returnsBlob;
++			return this;
++		}
 
 		/**
 		 * Method to build the HTTP Request based on the parameters provided.
@@ -579,7 +589,7 @@ public with sharing class ffhttp_Client
 		public Object execute()
 		{
 			HttpResponse response = executeUnparsed();
-			return parse(response);
+			return (returnsBlob) ? response.getBodyAsBlob() : parse(response);
 		}
 
 		public Object parse(HttpResponse response)
