@@ -12,3 +12,4 @@ config/
 salesforce.schema
 target/
 temp/
+.sfdx/
