@@ -8,8 +8,6 @@
 Referenced Packages/
 build.properties
 buildx.xml
-config/
 salesforce.schema
 target/
-temp/
 .sfdx/
