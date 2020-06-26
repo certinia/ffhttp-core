@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>ffhttp_AbstractClientCredentialsNotSet</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Credentials not set</shortDescription>
+        <value>AbstractClient.Credentials not set</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_AbstractClientNotSet</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AbstractClient not set</shortDescription>
+        <value>AbstractClient not set</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_InvalidStateAddingProtectedHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for invalid request</shortDescription>
+        <value>AbstractClientRequest: Invalid State: Cannot add protected header</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_InvalidStateJsonAndRequestBody</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for invalid request</shortDescription>
+        <value>AbstractClientRequest: Invalid State: A request cannot have both a request body and JSON parameters</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullAccessToken</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AccessToken cannot be null</shortDescription>
+        <value>AccessToken cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullBlob</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Blob cannot be null</shortDescription>
+        <value>Blob cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullContentType</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ContentType cannot be null</shortDescription>
+        <value>ContentType cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullNamedCredentialName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Named Credential Name cannot be null</shortDescription>
+        <value>Named Credential Name cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullTokenType</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>TokenType cannot be null</shortDescription>
+        <value>TokenType cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_UnhandledRedirection</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for unhandled redirection</shortDescription>
+        <value>Response returned a 3xx Redirection error which is currently unhandled</value>
+    </labels>
+</CustomLabels>
